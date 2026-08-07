@@ -1,0 +1,679 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ================================================
+   VINTAGE STORY THEME
+   Warm amber/copper accents over a dark teal-slate
+   ================================================ */
+@layer base {
+  :root {
+    /* Light mode kept for completeness, but app ships dark */
+    --background: 36 22% 96%;
+    --foreground: 195 30% 12%;
+    --card: 36 25% 99%;
+    --card-foreground: 195 30% 12%;
+    --popover: 36 25% 99%;
+    --popover-foreground: 195 30% 12%;
+    --primary: 25 75% 48%;
+    --primary-foreground: 40 40% 98%;
+    --secondary: 35 18% 90%;
+    --secondary-foreground: 195 30% 12%;
+    --muted: 35 18% 90%;
+    --muted-foreground: 195 12% 38%;
+    --accent: 25 75% 48%;
+    --accent-foreground: 40 40% 98%;
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 40 40% 98%;
+    --border: 35 22% 80%;
+    --input: 35 22% 85%;
+    --ring: 25 75% 48%;
+    --radius: 0.625rem;
+
+    /* App-specific tokens */
+    --surface-1: 36 22% 96%;     /* main canvas */
+    --surface-2: 36 22% 99%;     /* cards */
+    --surface-3: 35 18% 92%;     /* subtle inset (e.g., console, chips) */
+    --copper: 25 75% 48%;
+    --copper-soft: 30 65% 55%;
+    --ember: 18 85% 55%;
+    --gold: 42 70% 55%;
+    --emerald: 142 55% 42%;
+    --teal-haze: 195 18% 60%;
+  }
+
+  .dark {
+    /* Canvas — dark teal/slate with a hint of warmth */
+    --background: 200 28% 8%;
+    --foreground: 38 25% 92%;
+
+    /* Cards sit a bit above the canvas */
+    --card: 200 25% 11%;
+    --card-foreground: 38 25% 92%;
+    --popover: 200 27% 10%;
+    --popover-foreground: 38 25% 92%;
+
+    /* Primary action = warm copper */
+    --primary: 25 78% 52%;
+    --primary-foreground: 40 35% 97%;
+
+    /* Secondary = a flatter teal-slate, used for unselected pills */
+    --secondary: 200 22% 16%;
+    --secondary-foreground: 38 25% 92%;
+
+    /* Muted text/surfaces */
+    --muted: 200 20% 15%;
+    --muted-foreground: 200 12% 62%;
+
+    /* Accents and ring share the copper hue */
+    --accent: 25 78% 52%;
+    --accent-foreground: 40 35% 97%;
+    --destructive: 0 70% 52%;
+    --destructive-foreground: 40 35% 97%;
+
+    /* Subtle warm-brown borders */
+    --border: 30 18% 22%;
+    --input: 200 22% 16%;
+    --ring: 25 78% 55%;
+
+    /* App-specific tokens */
+    --surface-1: 200 28% 8%;
+    --surface-2: 200 25% 11%;
+    --surface-3: 200 30% 6%;
+    --copper: 25 78% 52%;
+    --copper-soft: 30 70% 60%;
+    --ember: 18 88% 58%;
+    --gold: 42 75% 60%;
+    --emerald: 142 55% 48%;
+    --teal-haze: 195 18% 60%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html, body, #root {
+    height: 100%;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1, "ss01" 1;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -10%, hsl(25 50% 22% / 0.18), transparent 60%),
+      radial-gradient(ellipse 60% 40% at 100% 100%, hsl(200 40% 18% / 0.4), transparent 70%),
+      linear-gradient(180deg, hsl(var(--surface-1)) 0%, hsl(200 30% 6%) 100%);
+    background-attachment: fixed;
+    /* Sin seleccion de texto al hacer click+drag — UX nativa de desktop. */
+    user-select: none;
+    -webkit-user-select: none;
+    /* Tap highlight de WebView2 en click sostenido. */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Opt-in: re-habilitar seleccion donde tiene sentido (inputs, textareas,
+     contenteditable, codigo / paths). Para casos ad-hoc usar .selectable. */
+  input,
+  textarea,
+  [contenteditable="true"],
+  pre,
+  code,
+  kbd,
+  samp,
+  .selectable,
+  .selectable * {
+    user-select: text;
+    -webkit-user-select: text;
+  }
+
+  /* Imagenes / iconos: tampoco arrastrables (sino aparecen como drag image). */
+  img,
+  svg {
+    -webkit-user-drag: none;
+    user-select: none;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(30 18% 28% / 0.5);
+    border-radius: 6px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(25 50% 40% / 0.7);
+    background-clip: padding-box;
+    border: 2px solid transparent;
+  }
+}
+
+/* ================================================
+   VS-specific component utilities
+   ================================================ */
+@layer components {
+  /* Panel — slight warm border + inner highlight */
+  .vs-panel {
+    @apply rounded-xl border bg-card text-card-foreground;
+    background-image: linear-gradient(
+      180deg,
+      hsl(var(--card)) 0%,
+      hsl(200 28% 9%) 100%
+    );
+    box-shadow:
+      inset 0 1px 0 hsl(40 35% 60% / 0.04),
+      0 1px 0 hsl(0 0% 0% / 0.4),
+      0 8px 24px hsl(0 0% 0% / 0.25);
+    border-color: hsl(30 18% 22%);
+  }
+
+  .vs-panel-inset {
+    @apply rounded-lg border;
+    background: hsl(var(--surface-3));
+    border-color: hsl(30 15% 18%);
+    box-shadow: inset 0 1px 2px hsl(0 0% 0% / 0.4);
+  }
+
+  /* Section title used inside panel headers */
+  .vs-panel-title {
+    @apply flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em];
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Metric card — used in dashboard top strip */
+  .vs-metric-card {
+    @apply relative rounded-xl border p-4 overflow-hidden;
+    background: linear-gradient(
+      180deg,
+      hsl(200 25% 12%) 0%,
+      hsl(200 28% 9%) 100%
+    );
+    border-color: hsl(30 18% 22%);
+    box-shadow:
+      inset 0 1px 0 hsl(40 35% 60% / 0.05),
+      0 1px 0 hsl(0 0% 0% / 0.3);
+  }
+  .vs-metric-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      circle at 0% 0%,
+      hsl(25 70% 50% / 0.05),
+      transparent 60%
+    );
+  }
+
+  /* Big number used inside metric cards */
+  .vs-metric-value {
+    font-variant-numeric: tabular-nums;
+    @apply text-2xl font-bold tracking-tight text-foreground;
+  }
+
+  .vs-metric-label {
+    @apply text-[10px] font-semibold uppercase tracking-[0.16em];
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* "Online" pill style */
+  .vs-status-online {
+    @apply inline-flex items-center gap-1.5 text-xs font-medium;
+    color: hsl(var(--emerald));
+  }
+  .vs-status-offline {
+    @apply inline-flex items-center gap-1.5 text-xs font-medium;
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Pulse dot */
+  .vs-pulse-dot {
+    @apply relative inline-block w-2 h-2 rounded-full;
+    background: hsl(var(--emerald));
+    box-shadow: 0 0 0 0 hsl(142 55% 48% / 0.7);
+    animation: vs-pulse 2s infinite;
+  }
+  .vs-pulse-dot-amber {
+    background: hsl(var(--ember));
+    animation-name: vs-pulse-amber;
+  }
+  @keyframes vs-pulse {
+    0% { box-shadow: 0 0 0 0 hsl(142 55% 48% / 0.6); }
+    70% { box-shadow: 0 0 0 8px hsl(142 55% 48% / 0); }
+    100% { box-shadow: 0 0 0 0 hsl(142 55% 48% / 0); }
+  }
+  @keyframes vs-pulse-amber {
+    0% { box-shadow: 0 0 0 0 hsl(25 80% 55% / 0.6); }
+    70% { box-shadow: 0 0 0 8px hsl(25 80% 55% / 0); }
+    100% { box-shadow: 0 0 0 0 hsl(25 80% 55% / 0); }
+  }
+
+  /* Sidebar nav item */
+  .vs-nav-item {
+    @apply relative flex items-center gap-3 w-full rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150;
+    color: hsl(var(--muted-foreground));
+  }
+  .vs-nav-item:hover {
+    color: hsl(var(--foreground));
+    background: hsl(200 22% 14%);
+  }
+  .vs-nav-item[data-active="true"] {
+    color: hsl(40 35% 97%);
+    background: linear-gradient(
+      90deg,
+      hsl(25 78% 50% / 0.85) 0%,
+      hsl(20 70% 42% / 0.85) 100%
+    );
+    box-shadow:
+      inset 0 1px 0 hsl(40 60% 75% / 0.18),
+      0 0 0 1px hsl(25 70% 40% / 0.5),
+      0 6px 18px hsl(25 70% 30% / 0.35);
+  }
+  .vs-nav-item[data-active="true"]::before {
+    content: '';
+    position: absolute;
+    left: -9px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 9px;
+    height: 14px;
+    background: linear-gradient(180deg, hsl(var(--ember)), hsl(var(--copper)));
+    /* Triangulo apuntando a la derecha (la punta queda contra el borde del item).
+       Vertices: (0,0) arriba-izq, (0,100%) abajo-izq, (100%,50%) punta derecha. */
+    clip-path: polygon(0 0, 0 100%, 100% 50%);
+    filter: drop-shadow(0 0 8px hsl(25 80% 55% / 0.7));
+  }
+
+  /* Primary CTA (Start Server) */
+  .vs-cta-primary {
+    background: linear-gradient(
+      180deg,
+      hsl(28 80% 58%) 0%,
+      hsl(22 78% 46%) 100%
+    );
+    color: hsl(40 40% 98%);
+    box-shadow:
+      inset 0 1px 0 hsl(40 70% 80% / 0.25),
+      0 1px 0 hsl(20 70% 25% / 0.6),
+      0 8px 18px hsl(25 80% 35% / 0.35);
+    border: 1px solid hsl(20 70% 38%);
+    transition: all 150ms ease;
+  }
+  .vs-cta-primary:hover:not(:disabled) {
+    filter: brightness(1.08);
+    box-shadow:
+      inset 0 1px 0 hsl(40 70% 80% / 0.3),
+      0 1px 0 hsl(20 70% 25% / 0.6),
+      0 10px 24px hsl(25 80% 35% / 0.5),
+      0 0 18px hsl(25 90% 50% / 0.35);
+  }
+  .vs-cta-primary:disabled {
+    filter: grayscale(0.7) brightness(0.6);
+  }
+
+  /* Secondary action (Stop, Restart, etc.) */
+  .vs-cta-secondary {
+    background: hsl(200 25% 13%);
+    color: hsl(38 22% 88%);
+    border: 1px solid hsl(30 15% 22%);
+    box-shadow: inset 0 1px 0 hsl(40 30% 70% / 0.04);
+    transition: all 150ms ease;
+  }
+  .vs-cta-secondary:hover:not(:disabled) {
+    background: hsl(200 25% 16%);
+    border-color: hsl(30 25% 30%);
+    color: hsl(40 35% 95%);
+  }
+
+  /* Console */
+  .vs-console {
+    background:
+      linear-gradient(180deg, hsl(200 35% 5%) 0%, hsl(200 40% 4%) 100%);
+    border: 1px solid hsl(30 18% 18%);
+    box-shadow: inset 0 0 0 1px hsl(0 0% 0% / 0.3), inset 0 2px 6px hsl(0 0% 0% / 0.5);
+    /* Las lineas son <p> (no <pre>/<code>), no las pesca el opt-in de
+       seleccion default. Re-habilitamos a nivel del container del log. */
+    user-select: text;
+    -webkit-user-select: text;
+  }
+  .vs-console-line {
+    font-family: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 11.5px;
+    line-height: 1.55;
+    color: hsl(38 18% 78%);
+    word-break: break-word;
+  }
+  .vs-console-line--err { color: hsl(0 70% 65%); }
+  .vs-console-line--warn { color: hsl(42 75% 65%); }
+  .vs-console-line--info { color: hsl(195 50% 70%); }
+  .vs-console-line--cmd { color: hsl(28 80% 65%); }
+
+  /* Avatar */
+  .vs-avatar {
+    @apply relative inline-flex items-center justify-center rounded-full overflow-hidden shrink-0;
+    background: linear-gradient(135deg, hsl(28 60% 35%), hsl(20 50% 25%));
+    color: hsl(40 35% 95%);
+    border: 1px solid hsl(30 25% 30%);
+  }
+
+  /* Status bar (footer) */
+  .vs-statusbar {
+    background: hsl(200 30% 6%);
+    border-top: 1px solid hsl(30 15% 18%);
+    color: hsl(var(--muted-foreground));
+  }
+
+  /* Decorative top-bar gradient */
+  .vs-topbar {
+    background:
+      linear-gradient(180deg, hsl(200 32% 9%) 0%, hsl(200 30% 7%) 100%);
+    border-bottom: 1px solid hsl(30 15% 20%);
+    box-shadow: 0 1px 0 hsl(40 35% 60% / 0.03);
+  }
+}
+
+/* ================================================
+   Animations preserved/repurposed
+   ================================================ */
+@keyframes torch-flicker {
+  0%, 100% {
+    filter: drop-shadow(0 0 8px rgba(255, 147, 41, 0.55))
+            drop-shadow(0 0 18px rgba(255, 100, 20, 0.35))
+            drop-shadow(0 0 30px rgba(255, 60, 0, 0.18));
+  }
+  25% {
+    filter: drop-shadow(0 0 10px rgba(255, 160, 50, 0.65))
+            drop-shadow(0 0 22px rgba(255, 110, 30, 0.45))
+            drop-shadow(0 0 36px rgba(255, 70, 10, 0.22));
+  }
+  50% {
+    filter: drop-shadow(0 0 6px rgba(255, 130, 30, 0.45))
+            drop-shadow(0 0 16px rgba(255, 90, 15, 0.3))
+            drop-shadow(0 0 28px rgba(255, 50, 0, 0.13));
+  }
+  75% {
+    filter: drop-shadow(0 0 12px rgba(255, 170, 60, 0.7))
+            drop-shadow(0 0 26px rgba(255, 120, 40, 0.5))
+            drop-shadow(0 0 40px rgba(255, 80, 20, 0.27));
+  }
+}
+.animate-torch-glow { animation: torch-flicker 2s ease-in-out infinite; }
+
+/* ================================================
+   Vintage Story gear loader
+   ================================================ */
+@keyframes vs-gear-rotate {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes vs-gear-rotate-rev {
+  /* Counter-rotates ~1.55x faster so meshing reads as plausible. */
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes vs-gear-glow {
+  0%, 100% {
+    filter:
+      drop-shadow(0 0 4px hsl(25 90% 50% / 0.35))
+      drop-shadow(0 0 10px hsl(20 80% 40% / 0.25));
+  }
+  50% {
+    filter:
+      drop-shadow(0 0 6px hsl(28 95% 58% / 0.5))
+      drop-shadow(0 0 14px hsl(22 85% 45% / 0.35));
+  }
+}
+
+.vs-gear-loader {
+  /* Glow lives on the wrapper so both gears share the flicker. */
+  animation: vs-gear-glow 2.2s ease-in-out infinite;
+}
+.vs-gear-loader svg { display: block; overflow: visible; }
+
+.vs-gear-spin,
+.vs-gear-spin-rev {
+  /* fill-box makes transform-origin: center resolve to the element's own
+     bbox center — which IS the gear center because the gear shapes are
+     drawn symmetrically around (0, 0). */
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.vs-gear-spin     { animation: vs-gear-rotate     4s linear infinite; }
+.vs-gear-spin-rev { animation: vs-gear-rotate-rev 2.6s linear infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .vs-gear-spin, .vs-gear-spin-rev { animation: none; }
+  .vs-gear-loader { animation: none; }
+}
+
+/* Stop progress dots */
+.stop-dot-inactive { background-color: hsl(var(--muted-foreground) / 0.3); }
+.stop-dot-active {
+  background-color: hsl(25 90% 55%);
+  box-shadow:
+    0 0 6px hsl(25 90% 55% / 0.8),
+    0 0 12px hsl(20 80% 45% / 0.6),
+    0 0 20px hsl(15 70% 35% / 0.4);
+  animation: dot-glow 1.5s ease-in-out infinite;
+}
+
+/* ------- Group flow dots ------- */
+/* Cada dot empieza como circulo pequeno. Cuando es el stage actual y hay
+   eventos de progress, se "estira" a una pill horizontal con fill animado.
+   Al avanzar al siguiente stage, el width vuelve a 12px y queda como circulo
+   activo (sin barra). El transition del width hace la animacion morph. */
+.flow-dot {
+  position: relative;
+  height: 12px;
+  width: 12px;
+  border-radius: 9999px;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: width 450ms cubic-bezier(0.4, 0, 0.2, 1),
+              border-radius 350ms ease,
+              background-color 250ms ease;
+}
+
+.flow-dot--inactive {
+  background-color: hsl(var(--muted-foreground) / 0.25);
+}
+
+.flow-dot--active {
+  background-color: hsl(25 90% 55%);
+  box-shadow:
+    0 0 6px hsl(25 90% 55% / 0.7),
+    0 0 12px hsl(20 80% 45% / 0.45);
+}
+
+.flow-dot--current {
+  animation: dot-glow 1.5s ease-in-out infinite;
+}
+
+/* Pill expandido: contiene el fill y el texto del porcentaje */
+.flow-dot--expanded {
+  width: 104px;
+  border-radius: 6px;
+  background-color: hsl(25 80% 25% / 0.45);
+  border: 1px solid hsl(25 90% 55% / 0.5);
+  animation: none; /* el glow se desactiva mientras es barra para no marear */
+  box-shadow:
+    0 0 8px hsl(25 90% 55% / 0.5),
+    0 0 16px hsl(20 80% 45% / 0.3);
+}
+
+.flow-dot__fill {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, hsl(28 95% 60%), hsl(20 85% 48%));
+  transform-origin: left;
+  transition: transform 250ms linear;
+  box-shadow: inset 0 0 6px hsl(25 90% 65% / 0.6);
+}
+
+.flow-dot__percent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  letter-spacing: 0.02em;
+  text-shadow: 0 1px 2px hsl(15 80% 15% / 0.7);
+}
+@keyframes dot-glow {
+  0%, 100% {
+    box-shadow:
+      0 0 6px hsl(25 90% 55% / 0.8),
+      0 0 12px hsl(20 80% 45% / 0.6),
+      0 0 20px hsl(15 70% 35% / 0.4);
+  }
+  50% {
+    box-shadow:
+      0 0 8px hsl(28 95% 60% / 0.9),
+      0 0 16px hsl(22 85% 50% / 0.7),
+      0 0 25px hsl(18 75% 40% / 0.5);
+  }
+}
+
+/* ================================================
+   MOD BROWSER (existing styles, retuned to new tokens)
+   ================================================ */
+.mod-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid hsl(var(--border));
+}
+.mod-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 4px 12px hsl(25 90% 50% / 0.12),
+    0 8px 24px hsl(20 60% 35% / 0.18),
+    0 0 0 1px hsl(35 60% 50% / 0.18);
+  border-color: hsl(35 50% 45% / 0.4);
+}
+.mod-logo-container {
+  position: relative;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: linear-gradient(135deg, hsl(var(--muted)) 0%, hsl(var(--muted) / 0.7) 100%);
+  border: 2px solid hsl(var(--border));
+  transition: border-color 0.3s ease;
+}
+.mod-card:hover .mod-logo-container { border-color: hsl(35 50% 45% / 0.5); }
+
+.mod-search-panel {
+  background: linear-gradient(135deg, hsl(var(--card)) 0%, hsl(var(--card) / 0.97) 100%);
+  border: 1px solid hsl(var(--border));
+  position: relative;
+}
+.mod-search-input { transition: all 0.2s ease; }
+.mod-search-input:focus { box-shadow: 0 0 0 2px hsl(25 80% 50% / 0.25); }
+
+.mod-search-button { transition: all 0.2s ease; }
+.mod-search-button:hover:not(:disabled) {
+  box-shadow: 0 0 12px hsl(25 90% 50% / 0.3), 0 0 20px hsl(20 70% 40% / 0.2);
+}
+
+.mod-badge-server {
+  background-color: hsl(140 55% 35% / 0.18);
+  color: hsl(140 55% 60%);
+  border-color: hsl(140 55% 40% / 0.35);
+}
+.mod-badge-client {
+  background-color: hsl(220 70% 50% / 0.18);
+  color: hsl(220 70% 75%);
+  border-color: hsl(220 70% 50% / 0.35);
+}
+.mod-badge-universal {
+  background-color: hsl(35 70% 45% / 0.2);
+  color: hsl(40 75% 70%);
+  border-color: hsl(35 60% 45% / 0.4);
+}
+
+.mod-empty-icon {
+  color: hsl(35 60% 50% / 0.6);
+  filter: drop-shadow(0 0 12px hsl(35 60% 50% / 0.25));
+}
+
+.mod-download-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  background: linear-gradient(135deg, hsl(35 60% 45% / 0.15) 0%, hsl(20 60% 40% / 0.15) 100%);
+  color: hsl(var(--muted-foreground));
+  border: 1px solid hsl(35 60% 45% / 0.25);
+}
+
+.mod-pagination-active {
+  background: linear-gradient(135deg, hsl(25 78% 52%) 0%, hsl(20 70% 42%) 100%);
+  color: hsl(40 35% 97%);
+  border-color: transparent;
+  box-shadow:
+    0 2px 8px hsl(25 80% 40% / 0.4),
+    0 0 0 1px hsl(25 70% 35% / 0.2);
+}
+.mod-pagination-active:hover { filter: brightness(1.08); }
+
+.mod-dialog-header {
+  position: relative;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid hsl(var(--border));
+}
+.mod-dialog-header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent 0%, hsl(35 60% 50% / 0.45) 50%, transparent 100%);
+}
+
+.mod-release-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+}
+.mod-release-card:hover {
+  border-color: hsl(35 60% 50% / 0.4);
+  box-shadow: 0 2px 8px hsl(25 70% 40% / 0.15);
+}
+
+.mod-section-title {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+.mod-section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, hsl(var(--border)) 0%, transparent 100%);
+}
+
+.mod-filter-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: hsl(var(--muted-foreground));
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}

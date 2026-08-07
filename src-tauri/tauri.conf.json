@@ -1,0 +1,57 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Shulius Vintage Server Manager",
+  "version": "0.2.19",
+  "identifier": "com.shulius.vsservermanager",
+  "build": {
+    "beforeDevCommand": "npm run dev",
+    "devUrl": "http://localhost:5173",
+    "beforeBuildCommand": "npm run build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "Shulius's Vintage Server Manager",
+        "width": 1200,
+        "height": 800,
+        "resizable": true,
+        "fullscreen": false,
+        "minWidth": 900,
+        "minHeight": 600
+      }
+    ],
+    "security": {
+      "csp": "default-src 'self'; connect-src 'self' ipc: http://ipc.localhost https: http:; img-src 'self' data: blob: https: asset: http://asset.localhost; style-src 'self' 'unsafe-inline'; font-src 'self' data:; script-src 'self'; object-src 'none'; frame-src 'none'; base-uri 'self'"
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "createUpdaterArtifacts": true,
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.ico"
+    ],
+    "copyright": "(c) 2026 Shulius",
+    "shortDescription": "A desktop tool for managing Vintage Story game servers",
+    "longDescription": "Shulius Vintage Server Manager is a desktop application for managing Vintage Story dedicated game servers. It provides server lifecycle control, mod management, save file backups, and network diagnostics.",
+    "windows": {
+      "certificateThumbprint": null,
+      "timestampUrl": null
+    }
+  },
+  "plugins": {
+    "updater": {
+      "endpoints": [
+        "https://github.com/ExLizer/Shulius-Vintage-Server-Manager/releases/latest/download/latest.json"
+      ],
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDFBMTY0M0I1Q0NGNEU2OEYKUldTUDV2VE10VU1XR3J4RmE3dXFnMVFYZmdubWpBaXJBSjFzZ3RPQVNGUU9mQkh0dzl6NGc0VUEK",
+      "windows": {
+        "installMode": "passive"
+      }
+    }
+  }
+}

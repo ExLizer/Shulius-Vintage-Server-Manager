@@ -1,0 +1,120 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g. 0.2.0). Leave empty to use tauri.conf.json version.'
+        required: false
+        default: ''
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Resolve version
+        id: ver
+        shell: pwsh
+        run: |
+          if ('${{ github.event_name }}' -eq 'push') {
+            $tag = '${{ github.ref_name }}'
+            $version = $tag -replace '^v', ''
+          } elseif ('${{ inputs.version }}' -ne '') {
+            $version = '${{ inputs.version }}'
+            $tag = "v$version"
+          } else {
+            $conf = Get-Content src-tauri/tauri.conf.json -Raw | ConvertFrom-Json
+            $version = $conf.version
+            $tag = "v$version"
+          }
+          Write-Host "Version: $version"
+          Write-Host "Tag:     $tag"
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "tag=$tag" >> $env:GITHUB_OUTPUT
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri -> target
+
+      - name: Install npm deps
+        run: npm ci
+
+      - name: Build signed installer
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+        run: npm run tauri -- build
+
+      - name: Stage artifacts and build latest.json
+        id: stage
+        shell: pwsh
+        run: |
+          $version = '${{ steps.ver.outputs.version }}'
+          $tag = '${{ steps.ver.outputs.tag }}'
+          $bundle = "src-tauri/target/release/bundle/nsis"
+
+          $installer = Get-ChildItem $bundle -Filter "*_${version}_*-setup.exe" | Select-Object -First 1
+          $zip = Get-ChildItem $bundle -Filter "*_${version}_*-setup.nsis.zip" | Select-Object -First 1
+          $sig = Get-ChildItem $bundle -Filter "*_${version}_*-setup.nsis.zip.sig" | Select-Object -First 1
+          if (-not $installer) { throw "installer not found" }
+          if (-not $zip) { throw "zip not found" }
+          if (-not $sig) { throw "sig not found" }
+
+          $stage = "release-stage"
+          New-Item -ItemType Directory -Path $stage -Force | Out-Null
+
+          $installerOut = Join-Path $stage ($installer.Name -replace '\s+', '-')
+          $zipOut = Join-Path $stage ($zip.Name -replace '\s+', '-')
+          $sigOut = Join-Path $stage ($sig.Name -replace '\s+', '-')
+          Copy-Item $installer.FullName $installerOut
+          Copy-Item $zip.FullName $zipOut
+          Copy-Item $sig.FullName $sigOut
+
+          $sigContent = (Get-Content $sig.FullName -Raw).Trim()
+          $assetName = [System.IO.Path]::GetFileName($zipOut)
+          $repo = '${{ github.repository }}'
+          $assetUrl = "https://github.com/$repo/releases/download/$tag/$assetName"
+
+          $latest = [ordered]@{
+            version   = $version
+            notes     = "Release $version"
+            pub_date  = (Get-Date).ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ssZ")
+            platforms = [ordered]@{
+              "windows-x86_64" = [ordered]@{
+                signature = $sigContent
+                url       = $assetUrl
+              }
+            }
+          }
+          $latest | ConvertTo-Json -Depth 10 | Set-Content (Join-Path $stage "latest.json") -Encoding utf8
+
+          "stage=$stage" >> $env:GITHUB_OUTPUT
+
+      - name: Create or update GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.ver.outputs.tag }}
+          name: ${{ steps.ver.outputs.tag }}
+          files: |
+            release-stage/*
+          draft: false
+          prerelease: false
+          fail_on_unmatched_files: true

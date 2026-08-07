@@ -1,0 +1,45 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# PocketBase data del deploy local (contiene DB con datos reales)
+deploy/pb_data/
+
+# Documentos internos de auditoría: contienen emails de usuarios reales y
+# detalles de vulnerabilidades — no publicar en el repo
+SECURITY_AUDIT.md
+pb_schema_audit.md
+
+# Material de trabajo interno (briefs, screenshots sueltos)
+WEBSITE_BRIEF.md
+image*.png
+Q1.png
+Q2.png
+
+# Artefactos de build de Tauri/Rust
+src-tauri/target/
+src-tauri/gen/schemas/
+
+# Staging de releases (instaladores firmados)
+scripts/release-stage/
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
