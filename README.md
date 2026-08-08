@@ -3,7 +3,7 @@
 A desktop app to run, manage and share **Vintage Story** dedicated servers — with optional
 self-hostable cloud features for playing with friends.
 
-![Dashboard](dashboard.png)
+
 
 **[⬇ Download the latest release](https://github.com/ExLizer/Shulius-Vintage-Server-Manager/releases/latest)** · Windows (NSIS installer)
 
