@@ -1,6 +1,6 @@
 [package]
 name = "vs-server-manager"
-version = "0.2.19"
+version = "0.2.20"
 description = "Vintage Story Server Manager"
 authors = ["you"]
 edition = "2021"
