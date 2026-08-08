@@ -150,11 +150,14 @@ works without it.
 #### 5. Enable your users
 
 New accounts are created with `cloud_enabled = false` and can join groups and download worlds,
-but cannot **create** groups/worlds or **host**. As the instance admin, open the admin UI →
-`users` collection and set for each trusted member:
+but cannot **create** groups/worlds or **host**. The easiest way to manage this is from the app
+itself: **Settings → Cloud server → Manage instance...**, sign in with your superuser account,
+and per user toggle:
 
-- `cloud_enabled` → `true`
-- `max_upload_bytes` → optional per-user upload cap in bytes (`0` = default 2 GB)
+- **Cloud enabled** → on
+- **Upload cap (GB)** → optional per-user cap (empty = default 2 GB)
+
+(The same fields can be edited from the PocketBase admin UI → `users` collection if you prefer.)
 
 This is an anti-abuse gate (uploads consume your disk/bandwidth), not a paywall: on your own
 instance, you decide who hosts. Users cannot flip these flags themselves — a server-side hook
