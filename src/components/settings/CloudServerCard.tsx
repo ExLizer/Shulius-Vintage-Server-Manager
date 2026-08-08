@@ -3,11 +3,12 @@ import { useTranslation } from "react-i18next";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Cloud, Loader2, Settings2 } from "lucide-react";
+import { Cloud, Loader2, Settings2, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { getPbUrl } from "@/lib/pocketbase";
 import { runSetupChecks } from "@/lib/pb-setup";
 import { CloudSetupWizard } from "@/components/setup/CloudSetupWizard";
+import { InstanceAdminDialog } from "./InstanceAdminDialog";
 
 // Tarjeta de Ajustes para ver/cambiar el servidor PocketBase en runtime.
 // El wizard hace el trabajo pesado (verificación paso a paso); acá solo
@@ -15,6 +16,7 @@ import { CloudSetupWizard } from "@/components/setup/CloudSetupWizard";
 export function CloudServerCard() {
     const { t } = useTranslation();
     const [wizardOpen, setWizardOpen] = useState(false);
+    const [adminOpen, setAdminOpen] = useState(false);
     const [testing, setTesting] = useState(false);
     // getPbUrl() no es reactivo; bump para releer tras cerrar el wizard.
     const [, setConfigVersion] = useState(0);
@@ -68,6 +70,12 @@ export function CloudServerCard() {
                             {t("setup.settingsCard.test")}
                         </Button>
                     )}
+                    {url && (
+                        <Button variant="outline" onClick={() => setAdminOpen(true)}>
+                            <ShieldCheck className="w-4 h-4 mr-2" />
+                            {t("instanceAdmin.openButton")}
+                        </Button>
+                    )}
                 </div>
 
                 {url && (
@@ -84,6 +92,8 @@ export function CloudServerCard() {
                     setConfigVersion((v) => v + 1);
                 }}
             />
+
+            <InstanceAdminDialog open={adminOpen} onClose={() => setAdminOpen(false)} />
         </Card>
     );
 }

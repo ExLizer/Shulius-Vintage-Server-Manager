@@ -794,5 +794,28 @@
       "description": "To use groups and world sync, first connect the app to a PocketBase server. It's free and you can host it yourself — the wizard guides you step by step.",
       "configure": "Set up cloud"
     }
+  },
+  "instanceAdmin": {
+    "openButton": "Manage instance...",
+    "title": "Instance administration",
+    "loginSubtitle": "Sign in with your PocketBase superuser account (the same one used for the /_/ panel).",
+    "email": "Superuser email",
+    "password": "Password",
+    "login": "Sign in",
+    "sessionNote": "The admin session lives in memory only: it is never written to disk and ends when you close this window.",
+    "usersSubtitle": "{{count}} users registered on this instance.",
+    "truncated": "Showing the first 200.",
+    "searchPlaceholder": "Search by email or name...",
+    "colUser": "User",
+    "colCloud": "Cloud enabled",
+    "colCap": "Upload cap (GB)",
+    "verified": "verified",
+    "capDefault": "2 (default)",
+    "capInvalid": "The cap must be a number greater than or equal to 0 (in GB).",
+    "capSaved": "Upload cap updated for {{email}}.",
+    "cloudEnabledOn": "Cloud enabled for {{email}}.",
+    "cloudEnabledOff": "Cloud disabled for {{email}}.",
+    "noResults": "No results.",
+    "footerHint": "“Cloud enabled” allows creating groups and worlds, hosting and uploading versions. New accounts start disabled; users cannot change these values for themselves. For advanced operations (deleting accounts, SMTP, backups) use the PocketBase web panel (/_/)."
   }
 }

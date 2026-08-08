@@ -36,7 +36,17 @@ export function useCloseGuard({ active, onIntercept }: Options) {
     let unlistenFn: (() => void) | null = null;
     let cancelled = false;
 
-    getCurrentWindow()
+    // Fuera de Tauri (dev en navegador) getCurrentWindow() lanza sincrónicamente
+    // y tumbaría todo el árbol de React. Sin ventana nativa no hay nada que
+    // interceptar, así que degradamos a no-op.
+    let win: ReturnType<typeof getCurrentWindow>;
+    try {
+      win = getCurrentWindow();
+    } catch {
+      return;
+    }
+
+    win
       .onCloseRequested((event) => {
         if (bypassRef.current) {
           // We initiated this close intentionally — let it through.

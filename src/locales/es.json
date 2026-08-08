@@ -794,5 +794,28 @@
       "description": "Para usar grupos y sincronización de mundos, primero conectá la app con un servidor PocketBase. Es gratis y podés montarlo vos mismo — el asistente te guía paso a paso.",
       "configure": "Configurar la nube"
     }
+  },
+  "instanceAdmin": {
+    "openButton": "Administrar instancia...",
+    "title": "Administración de la instancia",
+    "loginSubtitle": "Ingresá con tu cuenta de superusuario de PocketBase (la misma del panel /_/).",
+    "email": "Email de superusuario",
+    "password": "Contraseña",
+    "login": "Ingresar",
+    "sessionNote": "La sesión de administración vive solo en memoria: no se guarda en disco y se cierra al cerrar esta ventana.",
+    "usersSubtitle": "{{count}} usuarios registrados en la instancia.",
+    "truncated": "Se muestran los primeros 200.",
+    "searchPlaceholder": "Buscar por email o nombre...",
+    "colUser": "Usuario",
+    "colCloud": "Nube habilitada",
+    "colCap": "Cap de subida (GB)",
+    "verified": "verificado",
+    "capDefault": "2 (default)",
+    "capInvalid": "El cap debe ser un número mayor o igual a 0 (en GB).",
+    "capSaved": "Cap de subida actualizado para {{email}}.",
+    "cloudEnabledOn": "Nube habilitada para {{email}}.",
+    "cloudEnabledOff": "Nube deshabilitada para {{email}}.",
+    "noResults": "Sin resultados.",
+    "footerHint": "«Nube habilitada» permite crear grupos y mundos, hostear y subir versiones. Las cuentas nuevas nacen deshabilitadas; los usuarios no pueden cambiarse estos valores a sí mismos. Para operaciones avanzadas (borrar cuentas, SMTP, backups) usá el panel web de PocketBase (/_/)."
   }
 }
